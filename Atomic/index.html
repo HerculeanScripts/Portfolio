@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Click to Add Particles</h2>
+    <div id ="svgDiv">
+        <svg width="600" height="500" id = "svg"></svg>
+    </div>
+    <br>
+    <button id = "GenBtn" onclick="genParticles()">Generate X Particles</button>
+    <label id = "numLabel">10 Particles to Spawn: </label>
+    <input type="range" min="1" max="100" value="10" id="numInput">
+    <br>
+    <label id = "fieldLabel"> Field Constant (10): </label>
+    <input type="range" step = "0.01" min="0.01" max="1" value="1" id="fieldInput">
+    <br>
+    <label id = "chargeLabel">Charge to Spawn (1): </label>
+    <input type="range" min="-1" max="1" value="1" id="chargeInput">
+    <br>
+    <label id = "simLabel">Simulation Speed Factor : (10^0) </label>
+    <input type="range" step="0.01" min="-9" max="0" value="0" id="simInput">
+    <br>
+    <button id = "randvelButton" onclick="randVel()">Random Velocity : false</button>
+    <br>
+    <button id = "collideButton" onclick="toggleCollisions()">Collisions Enabled : false</button>
+    <br>
+    <button id = "boundedButton" onclick="boundedToggle()">Bounded : false</button>
+    <br>
+    <button onclick="clears()">Clear Particles</button>
+    <script src="script.js"></script>
+</body>
+</html>
