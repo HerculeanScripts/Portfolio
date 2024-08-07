@@ -3,3 +3,10 @@
     display: inline-block;
     background-color: black;
 }
+#instructionLabel {
+    position: absolute;
+    width: 50%;
+    height: auto;
+    top: 580px;
+    left: 35%;
+}

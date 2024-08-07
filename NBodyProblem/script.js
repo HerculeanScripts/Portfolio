@@ -16,7 +16,6 @@ var blackHoleMassLimit = 3000000;
 var randvel = false;
 var radiusToggle = false;
 var dt = 1;
-//var translationMatrix = [];
 const colors = ["blue", "green", "yellow", "orange", "red"];
 var [PI, sin, cos, tan, pow, sqrt, round, random, abs] = [
     Math.PI,

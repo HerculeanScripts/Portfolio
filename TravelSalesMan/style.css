@@ -2,3 +2,10 @@
     border: 3px solid black;
     display: inline-block;
 }
+#instructionLabel {
+    position: absolute;
+    width: 68%;
+    height: auto;
+    top: 600px;
+    left: 1%;
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fusion</title>
+    <title>Charged Particle Simulation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,13 +25,10 @@
     <label id = "simLabel">Simulation Speed Factor : (10^0) </label>
     <input type="range" step="0.01" min="-9" max="0" value="0" id="simInput">
     <br>
-    <button id = "randvelButton" onclick="randVel()">Random Velocity : false</button>
-    <br>
+    <button id = "randvelButton" onclick="randVel()">Random (Spawn) Velocity : false</button>
     <button id = "collideButton" onclick="toggleCollisions()">Collisions Enabled : false</button>
-    <br>
-    <button id = "boundedButton" onclick="boundedToggle()">Bounded : false</button>
-    <br>
     <button onclick="clears()">Clear Particles</button>
+    <p id="instructionLabel"><b>Information: </b>This is a simulation of how charged particles (electrons / protons / neutrons) would interact. Long range interaction is given by Coulomb's Law. Simulation speed factor slows down the simulation, increasing accuracy while sacrificing (visual) speed of particles. Zoom in and out with mouse scroll wheel (dependent on cursor location for zoom focus)<br></p>
     <script src="script.js"></script>
 </body>
 </html>

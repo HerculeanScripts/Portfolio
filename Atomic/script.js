@@ -14,7 +14,6 @@ var dt = 1;
 svg.setAttribute("width", window.screen.width - 100);
 var width = svg.getAttribute("width");
 var height = svg.getAttribute("height")
-//var translationMatrix = [];
 const chargeColors = ["blue", "gray", "red"];
 var [PI, sin, cos, tan, pow, sqrt, round, random, abs] = [
     Math.PI,
