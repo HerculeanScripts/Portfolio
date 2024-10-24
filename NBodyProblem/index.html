@@ -12,7 +12,7 @@
         <svg width="600" height="500" id = "svg"></svg>
     </div>
     <br>
-    <button id = "GenBtn" onclick="genObjects()">Generate X Objects</button>
+    <button class="btn" id = "GenBtn" onclick="genObjects()">Generate X Objects</button>
     <label id = "numLabel">10 Objects to Spawn: </label>
     <input type="range" min="1" max="100" value="10" id="numInput">
     <br>
@@ -22,18 +22,18 @@
     <label id = "massLabel">Mass to Spawn: (1000) </label>
     <input type="range" step="0.01" min="1" max="6" value="3" id="massInput">
     <br>
-    <button onclick="clears()">Clear Objects</button>
+    <button class="btn" onclick="clears()">Clear Objects</button>
     <br>
-    <button id = "collideButton" onclick="toggleCollisions()">Collisions Enabled : false</button>
+    <button class="btn" id = "collideButton" onclick="toggleCollisions()">Collisions Enabled : false</button>
     <br>
     <label id = "simLabel">Simulation Speed Factor (10^0) </label>
     <input type="range" step="0.01" min="-4" max="0" value="0" id="simInput">
     <br>
-    <button id = "randvelButton" onclick="randVel()">Random Spawn Velocity : false</button>
+    <button class="btn" id = "randvelButton" onclick="randVel()">Random Spawn Velocity : false</button>
     <br>
-    <button id = "fixedRadiusButton" onclick="fixedRadiusToggle()">Fixed Radius (Spawn) : false</button>
+    <label id = "pathLengthLabel">Path Length : 100 </label>
+    <input type="range" step="1" min="1" max="1000" value="100" id="pathLengthInput">
     <br>
-    <input type="range" step="0.01" min="1" max="20" value="6" id="radiusInput">
     <p id="instructionLabel"><b>Information: </b>This is a simulation of how gravitational objects (planets, stars) would interact using Newton's law of universal gravitation. This is a famous mathematical problem because there exists no exact solution (full calculation of all N positions as a function of time). Even small changes to initial conditions can lead to very different (unpredictable) outcomes in the future. Changing the fixed radius slider and toggle (lowest slider) allows for creation of high density objects (neutron stars / black holes). Zoom with mouse scroll wheel. <br></p>
     <script src="script.js"></script>
 </body>

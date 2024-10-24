@@ -10,3 +10,8 @@
     top: 580px;
     left: 35%;
 }
+.btn {
+    box-shadow: 0 0 6px #000000;
+    border-radius: 10px;
+    border-style: hidden;
+}

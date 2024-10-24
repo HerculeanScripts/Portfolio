@@ -2,7 +2,7 @@ const svg = document.getElementById("svg");
 var gravObjs = [];
 var gravitationalConstant = Math.pow(10, -4);
 var maxVel = 1;
-var currentMass = 10;
+var currentMass = 1000;
 var partsToSpawn = 10;
 svg.setAttribute("width", window.screen.width - 100);
 var width = svg.getAttribute("width");
@@ -16,6 +16,7 @@ var blackHoleMassLimit = 3000000;
 var randvel = false;
 var radiusToggle = false;
 var dt = 1;
+var pLength = 100;
 const colors = ["blue", "green", "yellow", "orange", "red"];
 var [PI, sin, cos, tan, pow, sqrt, round, random, abs] = [
     Math.PI,
@@ -28,19 +29,32 @@ var [PI, sin, cos, tan, pow, sqrt, round, random, abs] = [
     Math.random,
     Math.abs,
 ];
+var ref = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "circle",
+);svg.appendChild(ref);
+//var ref = null;
 class gravObj {
     constructor(startingPos, startingvel = false, startingMass = false, blackHole = false) {
         this.x = startingPos[0];
         this.y = startingPos[1];
+        this.previousPoints = [[this.x, this.y]];
         this.mass = currentMass;
             const circle = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "circle",
             );
+            const path = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path",
+            );
+            const color = colors[Math.floor(4 * random())];
+            path.setAttribute("stroke", color);
+            this.p = path;
             circle.setAttribute("cx", this.x);
             circle.setAttribute("cy", this.y);
     
-            circle.setAttribute("fill", colors[Math.floor(4 * random())]);
+            circle.setAttribute("fill", color);
             this.c = circle;
             this.velx = 0;
             this.vely = 0;
@@ -56,25 +70,49 @@ class gravObj {
                 this.mass = startingMass;
             }
             this.radius = pow(this.mass, 1/4);
-            if (this.mass > blackHoleMassLimit) {
+            /*if (this.mass > blackHoleMassLimit) {
                 circle.setAttribute("fill", "black");
                 this.radius = pow(this.mass / 1000000, 1/2);
             }
             if (radiusToggle) {
                 this.radius = fixedRadius;
-            }
+            }*/
             circle.setAttribute("r", this.radius);
             svg.appendChild(circle);
+            /*if (ref == null) {
+                ref = circle;
+            }*/
+            svg.insertBefore(path, ref);
             gravObjs.push(this);
-    }
+        }
     move() {
         this.x += dt*this.velx;
         this.y -= dt*this.vely;
         var [x,y] = scale([this.x, this.y]);
-        this.c.setAttribute("cx", x);
         this.c.setAttribute("cy", y);
+        this.c.setAttribute("cx", x);
         this.c.setAttribute("r", Math.max(this.radius * scaling, 0.6));
+        var last = this.previousPoints[this.previousPoints.length-1];
+        if (this.previousPoints.length > 0 && pow(pow(this.x-last[0], 2) + pow(this.y-last[1], 2),1/2) > 1) {
+            this.previousPoints.push([this.x, this.y]);
+        }
+        if (this.previousPoints.length > pLength) {
+            this.previousPoints.shift();
+        }
+        var scaledPoints = [...this.previousPoints];
+        for (var i = 0; i < scaledPoints.length; i++) {
+            scaledPoints[i] = scale(scaledPoints[i]);
+        }
+        this.p.setAttribute("d", "");
+        this.p.setAttribute("d", makeStringFromCords(scaledPoints));
     }
+}
+function makeStringFromCords(cords) {
+    var fin = `M${cords[0][0]},${cords[0][1]}`;
+    for (var i = 1; i < cords.length; i++) {
+        fin += ` L${cords[i][0]},${cords[i][1]}`
+    }
+    return fin;
 }
 function genObjects() {
     for (var i = 0; i < partsToSpawn; i++) {
@@ -84,6 +122,10 @@ function genObjects() {
 function clears() {
     gravObjs = [];
     svg.innerHTML = "";
+    ref = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle",
+    );svg.appendChild(ref);
 }
 function dist(b1, b2) {
     return sqrt(pow(b1.x - b2.x, 2) + pow(b1.y - b2.y, 2));
@@ -98,6 +140,8 @@ function combine(o1, o2) {
     gravObjs.splice(gravObjs.indexOf(o1), 1);
     gravObjs.splice(gravObjs.indexOf(o2), 1);
     o1.c.remove();
+    o1.p.remove();
+    o2.p.remove();
     o2.c.remove();
 }
 function velMod(target) {
@@ -156,7 +200,7 @@ function scale(actualPoint) {
     //    x = x * transformation[0] - (transformation[0] * transformation[1][0] - transformation[1][0]);
     //    y = y * transformation[0] - (transformation[0] * transformation[1][1] - transformation[1][1]);
     //}
-    
+
     return [scaling * actualPoint[0] + translationx, scaling * actualPoint[1] + translationy];
 }
 function reverseScale(scaledPoint) {
@@ -166,7 +210,7 @@ function reverseScale(scaledPoint) {
         x = (x + (transformation[0] * transformation[1][0] - transformation[1][0])) / transformation[0];
         y = (y + (transformation[0] * transformation[1][1] - transformation[1][1])) / transformation[0];
     }*/
-    return [(scaledPoint[0] - translationx) / scaling, (scaledPoint[1] - translationy) / scaling];
+    return [round(1000*(scaledPoint[0] - translationx) / scaling)/1000, round(1000*(scaledPoint[1] - translationy) / scaling)/1000];
 }
 document.getElementById("numInput").addEventListener("input", (event) => {
     partsToSpawn = parseInt(event.target.value);
@@ -185,8 +229,9 @@ document.getElementById("simInput").addEventListener("input", (event) => {
     dt = pow(10, parseFloat(event.target.value));
     document.getElementById("simLabel").innerHTML = `Simulation Speed Factor (10^${event.target.value})`;
 });
-document.getElementById("radiusInput").addEventListener("input", (event) => {
-    fixedRadius = parseFloat(event.target.value);
+document.getElementById("pathLengthInput").addEventListener("input", (event) => {
+    pLength = parseInt(event.target.value);
+    document.getElementById("pathLengthLabel").innerHTML = `Path Length : ${pLength}`;
 });
 document.getElementById("svgDiv").addEventListener("DOMMouseScroll", (event) => {
 console.log("s");
