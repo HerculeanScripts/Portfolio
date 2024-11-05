@@ -27,14 +27,18 @@
     <button class="btn" id = "collideButton" onclick="toggleCollisions()">Collisions Enabled : false</button>
     <br>
     <label id = "simLabel">Simulation Speed Factor (10^0) </label>
-    <input type="range" step="0.01" min="-4" max="0" value="0" id="simInput">
+    <input type="range" step="0.01" min="-4" max="2" value="0" id="simInput">
     <br>
     <button class="btn" id = "randvelButton" onclick="randVel()">Random Spawn Velocity : false</button>
     <br>
     <label id = "pathLengthLabel">Path Length : 100 </label>
-    <input type="range" step="1" min="1" max="1000" value="100" id="pathLengthInput">
+    <input type="range" step="1" min="1" max="10000" value="100" id="pathLengthInput">
     <br>
-    <p id="instructionLabel"><b>Information: </b>This is a simulation of how gravitational objects (planets, stars) would interact using Newton's law of universal gravitation. This is a famous mathematical problem because there exists no exact solution (full calculation of all N positions as a function of time). Even small changes to initial conditions can lead to very different (unpredictable) outcomes in the future. Changing the fixed radius slider and toggle (lowest slider) allows for creation of high density objects (neutron stars / black holes). Zoom with mouse scroll wheel. <br></p>
+    <button class="btn" id = "manualVelocityBtn" onclick="manualVelocityFunc()">Manual Velocity (Arrow) : true</button>
+    <br>
+    <button class="btn" id = "connectingLineBtn" onclick="connectingLineFunc()">Connecting Lines (red) visible : true</button>
+    <br>
+    <p id="instructionLabel"><b>Information: </b>This is a simulation of how gravitational objects (planets, stars) would interact using Newton's law of universal gravitation. This is a famous mathematical problem because there exists no exact solution (full calculation of all N positions as a function of time). Even small changes to initial conditions can lead to very different (unpredictable) outcomes in the future. Changing the fixed radius slider and toggle (lowest slider) allows for creation of high density objects (neutron stars / black holes). Zoom with mouse scroll wheel. Interstingly, the center of mass of the system never changes for 0 intial velocity objects(white dot in demo). Click (and while holding down) move the mouse cursor to set the magnitudde and direction of the object's velocity.<br></p>
     <script src="script.js"></script>
 </body>
 </html>
