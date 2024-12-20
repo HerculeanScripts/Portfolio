@@ -159,6 +159,7 @@ function addSpot(x, y) {
     } else {
         var totalCells = pixelAddSpan / (pixelSize / partition); // how many pixels to either side
         var a = Math.floor(totalCells / 2);
+        a = a || 1;
         for (var i = row - a; i < row + a; i++) {
             if (i < 0 || i > partition - 1) {
                 continue;
@@ -260,6 +261,12 @@ function updateTempAdd() {
 function updateChangeConstant() {
     c = parseFloat(document.getElementById("changeConstantInput").value);
     document.getElementById("changeConstantLabel").innerHTML = `Change constant : ${c}`;
+
+}
+
+function updateSpan() {
+  pixelAddSpan = parseInt(document.getElementById("changeSpanInput").value);
+  document.getElementById("cursorLabel").innerHTML = `Adding square size (fast add only) : ${pixelAddSpan} pixel`;
 
 }
 

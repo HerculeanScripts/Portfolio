@@ -32,7 +32,9 @@
 <br>
 <label id= "updateLabel">Update Screen Every X Cycle : 1</label>
 <input type="range" oninput = "updateDrawF()" id = "changeUpdateInput" min = "1", max = "100" value = "1" step="1">
-
 <br>
-<label >Thermal energy dispersal simulator. Click and drag around on the blue to add heat and it will change color accordingly: blue -> green -> yellow - > orange -> red. Click start to watch the heat dispersal. Reset to stop effect / start again. Use the slider for rows / columns to add more cells / make the dispersal finer but slower. To speed up the dispersion for large grids, change the adding mode to fast by clicking the checkbox. The change constant is how fast the heat disperses (lower = slower but more precise). Turn up the cycle slider to have the screen update less often (but speeds up computation). To add more temperature per click / drag, turn up the slider. To resize the screen, set a new dimension (should not be more than your screen width)..</label>
+<label id= "cursorLabel">Adding square size (fast add only) : 50 pixel</label>
+<input type="range" oninput = "updateSpan()" id = "changeSpanInput" min = "1", max = "200" value = "50" step="1">
+<br>
+<label >Thermal energy dispersal simulator. Click and drag around on the blue to add heat and it will change color accordingly: blue -> green -> yellow - > orange -> red. Click start to watch the heat dispersal. Reset to stop effect / start again. Use the slider for rows / columns to add more cells / make the dispersal finer but slower. To speed up the dispersion for large grids, change the adding mode to fast by clicking the checkbox. The change constant is how fast the heat disperses (lower = slower but more precise). Turn up the cycle slider to have the screen update less often (but speeds up computation). To add more temperature per click / drag, turn up the slider. To resize the screen, set a new dimension (should not be more than your screen width). If you want a larger “cursor” / color adding patch, adjust the slider which gives how many pixels across the adding square will be.</label>
 </body>
