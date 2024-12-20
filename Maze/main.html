@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze
+    </title>
+</head>
+<body>
+    <canvas id = "canvasElement"></canvas>
+<br>
+<button onclick="solve()">Solve</button>
+<button onclick="reset()">Reset</button>
+<button onclick="resetPath()">Reset only path</button>
+<label id="statsLabel">Maze can be solved in X moves</label>
+<br>
+<input type="range" oninput = "updatePartition()" id = "partitionInput" min = "2", max = "100" value = "25"> 
+<label id= "partitionLabel">Rows / Columns = 25</label>
+<br>
+<button onclick="updateDims()">Set New Dimensions</button>
+<input type="number" placeholder="Enter dims, defualt=250" id="dimensionInput">
+<br>
+<label>Click to add walls (white)</label>
+<script src="index.js"></script>
+</body>
