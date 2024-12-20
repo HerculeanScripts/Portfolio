@@ -10,11 +10,29 @@
     <canvas id = "canvasElement" ></canvas>
 <br>
 <button onclick="start()">Start</button>
+<label id="statsLabel">Average : 0; Min : 0; Max : 0;</label>
 <br>
 <script src="index.js" defer></script>
-<input type="range" oninput = "updatePartition()" id = "partitionInput" min = "2", max = "100" value = "25"> <label id= "partitionLabel">Rows / Columns = 25</label>
+<input type="range" oninput = "updatePartition()" id = "partitionInput" min = "2", max = "100" value = "25"> 
+<label id= "partitionLabel">Rows / Columns = 25</label>
 <br>
 <button onclick="reset()">Reset</button>
 <br>
-<label >Thermal energy dispersal simulator. Click and drag around on the blue to add heat and it will change color accordingly: blue -> green -> yellow - > orange -> red. Click start to watch the heat dispersal. Reset to stop effect / start again.</label>
+<button onclick="updateDims()">Set New Dimensions</button>
+<input type="number" placeholder="Enter dims, defualt=250" id="dimensionInput">
+<br>
+<label id ="addModeLabel">Adding mode : Normal Decay</label>
+<input type="checkbox" id="addModeInput" oninput="addModeChange()">
+<br>
+<label id= "changeConstantLabel">Change constant : 0.01</label>
+<input type="range" oninput = "updateChangeConstant()" id = "changeConstantInput" min = "0.001", max = "0.15" value = "0.01" step="0.001">
+<br>
+<label id= "tempAddLabel">Temp Per Click : 2</label>
+<input type="range" oninput = "updateTempAdd()" id = "tempAddInput" min = "0.1", max = "10" value = "2" step="0.1">
+<br>
+<label id= "updateLabel">Update Screen Every X Cycle : 1</label>
+<input type="range" oninput = "updateDrawF()" id = "changeUpdateInput" min = "1", max = "100" value = "1" step="1">
+
+<br>
+<label >Thermal energy dispersal simulator. Click and drag around on the blue to add heat and it will change color accordingly: blue -> green -> yellow - > orange -> red. Click start to watch the heat dispersal. Reset to stop effect / start again. Use the slider for rows / columns to add more cells / make the dispersal finer but slower. To speed up the dispersion for large grids, change the adding mode to fast by clicking the checkbox. The change constant is how fast the heat disperses (lower = slower but more precise). Turn up the cycle slider to have the screen update less often (but speeds up computation). To add more temperature per click / drag, turn up the slider. To resize the screen, set a new dimension (should not be more than your screen width)..</label>
 </body>
