@@ -14,11 +14,16 @@
 <button onclick="resetPath()">Reset only path</button>
 <label id="statsLabel">Maze can be solved in X moves</label>
 <br>
-<input type="range" oninput = "updatePartition()" id = "partitionInput" min = "2", max = "100" value = "25"> 
-<label id= "partitionLabel">Rows / Columns = 25</label>
+<input type="range" oninput = "updatePartition()" id = "partitionInput" min = "2", max = "500" value = "10"> 
+<label id= "partitionLabel">Rows / Columns = 10</label>
 <br>
 <button onclick="updateDims()">Set New Dimensions</button>
 <input type="number" placeholder="Enter dims, defualt=250" id="dimensionInput">
+<br>
+<button onclick="generate()">Generate maze</button>
+<br>
+<button onclick="updateWait()">Set Geneate Speed (ms per cycle)</button>
+<input type="number" placeholder="Enter wait time (ms), 100=defualt" id="speedInput">
 <br>
 <label>Click to add walls (white)</label>
 <script src="index.js"></script>
