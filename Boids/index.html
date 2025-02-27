@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boids</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Click to Add Boids</h2>
+    <div id ="svgDiv">
+        <svg width="600" height="500" id = "svg"></svg>
+    </div>
+    <br>
+    <button id = "GenBtn" onclick="genBoids()">Generate X Boids</button>
+    <label id = "numLabel">10 Boids to Spawn: </label>
+    <input type="range" min="1" max="100" value="10" id="numInput">
+    <br>
+    <button onclick="clears()">Clear Boids</button>
+    <br>
+    <label id = "simSpeedLabel">Speed Factor : 10^0</label>
+    <input type="range" min="-4" max="1" value="0" step = "0.1" id="simSpeedInput">
+    <script src="script.js"></script>
+</body>
+</html>

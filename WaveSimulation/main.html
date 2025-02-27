@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wave Equation</title>
+</head>
+<body>
+    <canvas id="canvasElement"></canvas>
+    <br>
+    <button onclick="start()">Start</button>
+    <button onclick="reset()">Reset</button>
+    <button id="wallBtn" onclick="addMode()">Adding : amplitude</button>
+    <br>
+    <label id="partitionLabel">Partitions : 100</label>
+    <input type="range" min="20" max="1000" value="100" id="partitionInput" onchange="changePartition()">
+    <script src="index.js"></script>
+
+</body>
+</html>

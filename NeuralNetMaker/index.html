@@ -3,50 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Table Example</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>NN Trainer</title>
 </head>
 <body>
-    <h2>Sample Table</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Age</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>28</td>
-            </tr>
-            <tr>
-                <td>Jane</td>
-                <td>Smith</td>
-                <td>32</td>
-            </tr>
-            <tr>
-                <td>Alex</td>
-                <td>Johnson</td>
-                <td>45</td>
-            </tr>
-        </tbody>
-    </table>
+
+    <label>Input layer: </label>
+      <input id="inputInput" placeholder="Input neuron #">
+      <br>
+      <label>Hidden layer 1: </label>
+      <input id="hidden1Input" placeholder="Hidden1 neuron #">
+      <select id="hidden1Select"> 
+      <option value="noneFunc">none</option>
+      <option value="ReLU">ReLU</option>
+      <option value="sigmoid">Sigmoid</option>
+      </select>
+      <br>
+      <label>Output layer: </label>
+      <input id="outputInput" placeholder="Output neuron #">
+      <select id="outputSelect"> 
+      <option value="noneFunc">none</option>
+      <option value="ReLU">ReLU</option>
+      <option value="sigmoid">Sigmoid</option>
+      </select>
+      <br>
+      <input id="etaInput" type="range" value="0.1" min="0.001" max="0.3" step="0.001" oninput="etaFunc()">
+      <label id="etaLabel">Eta (taining rate): 0.1</label>
+      <br>
+      <input id="timeInput" type="range" value="100" min="1" max="1000" step="1" oninput="timeFunc()">
+      <label id="timeLabel">Cycle time : 100ms</label>
+      <br>
+      <textarea placeholder="Enter function here" cols="60" rows="7" id="funcInput">trainFunc = function(inputs) {
+      //wrtie your function here
+      //all inputs are between 0-1, modify as needed
+      //example & default
+      return [Math.sin(inputs[0]]];
+      //return the output as an array
+}</textarea>
+<br>
+<button onclick = "start()">Start training</button>
+<label id="errorLabel">Error : 0</label><br>
+<button onclick="stop()">Stop training</button>
+<label id="iterationLabel">Iterations : 0</label><br>
+<br>
+<p id = "testLabel"></p>
     <script src="handle.js"></script>
 </body>
 </html>
