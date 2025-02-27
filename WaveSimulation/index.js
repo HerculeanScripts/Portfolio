@@ -17,6 +17,7 @@ var int = null;
 var addingWall = false;
 var tiemConstant = 10;
 var wallSquare = new Set();
+var gamma = 0.001;
 function generateDefaultGrids() {
     previous = [];
     current = [];
@@ -56,7 +57,8 @@ function updaste() {
     for (var i=0;i<partitions;i++) {
         for (var j = 0; j < partitions;j++) {
             var sum = getPlace(i-1, j) + getPlace(i+1, j) + getPlace(i, j-1) + getPlace(i, j+1) - 4*getPlace(i, j);
-            future[i][j] = 2*current[i][j]-previous[i][j]+a*(sum);
+            future[i][j] = 2*current[i][j]-previous[i][j]+a*(sum) + gamma*previous[i][j]*timeStep;
+            future[i][j] /= 1+ timeStep*gamma;
         }
     }
     previous = copy(current);
@@ -100,9 +102,9 @@ function changePartition () {
 }
 function addSpot(x,y) {
     var key =`${Math.floor(x/cellSize)},${Math.floor(y/cellSize)}`;
-    if (!addingWall) {
+    /*if (!addingWall) {
         current[Math.floor(y/cellSize)][Math.floor(x/cellSize)] +=1;
-        current[Math.floor(y/cellSize)][Math.floor(x/cellSize)] = Math.min(current[Math.floor(y/cellSize)][Math.floor(x/cellSize)],5);
+        current[Math.floor(y/cellSize)][Math.floor(x/cellSize)] = Math.min(current[Math.floor(y/cellSize)][Math.floor(x/cellSize)],10);
         if (wallSquare.has(key)) {
             wallSquare.delete(key);
         }
@@ -110,7 +112,27 @@ function addSpot(x,y) {
     else {
         wallSquare.add(key);
         current[Math.floor(y/cellSize)][Math.floor(x/cellSize)] =0;
+    }*/
+   var toeitherside = Math.floor(10/cellSize);
+   for (var i = Math.floor(x/cellSize) - toeitherside; i < Math.floor(x/cellSize) + toeitherside; i++) {
+    for (var j = Math.floor(y/cellSize) - toeitherside; j < Math.floor(y/cellSize) + toeitherside; j++) {
+        if (i < 0 || j < 0 || j >= partitions || i >= partitions) {
+            continue;
+        }
+        var key =`${i},${j}`;
+        if (!addingWall) {
+            current[j][i] +=1;
+            current[j][i] = Math.min(current[j][i],3);
+            if (wallSquare.has(key)) {
+                wallSquare.delete(key);
+            }
+        }
+        else {
+            wallSquare.add(key);
+            current[j][i] = 0;
+        }
     }
+}
     display();
 }
 function reset() {
