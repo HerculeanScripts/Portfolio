@@ -161,4 +161,24 @@ canvas.addEventListener("mousedown", (event) => {
 canvas.addEventListener("mouseup", (event) => {
     mouseIsDown = false;
 });
+//experimental mobile compatibility
+canvas.addEventListener("touchmove", (event) => {
+    var ele = canvas.getBoundingClientRect();
+    var x = event.x - ele.left;
+    var y = event.y - ele.top;
+
+    if (mouseIsDown) {
+        addSpot(x, y);
+    }
+});
+
+
+canvas.addEventListener("touchstart", (event) => {
+    mouseIsDown = true;
+});
+
+
+canvas.addEventListener("thouchend", (event) => {
+    mouseIsDown = false;
+});
 reset();
