@@ -176,10 +176,12 @@ canvas.addEventListener("touchmove", (event) => {
 
 canvas.addEventListener("touchstart", (event) => {
     mouseIsDown = true;
+    event.preventDefault();
 });
 
 
 canvas.addEventListener("thouchend", (event) => {
     mouseIsDown = false;
+    event.preventDefault();
 });
 reset();
