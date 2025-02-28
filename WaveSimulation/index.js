@@ -170,6 +170,7 @@ canvas.addEventListener("touchmove", (event) => {
     if (mouseIsDown) {
         addSpot(x, y);
     }
+    event.preventDefault();
 });
 
 
