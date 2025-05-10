@@ -156,7 +156,7 @@ function pickNextNode(available, current) {
     }
   }
   for (var i = 0; i < available.length; i++) {
-    nodeProbs[i] += (100/distance(available[i], current));
+    nodeProbs[i] += (100/(distance(available[i], current)));
   }
   var s = nodeProbs.reduce((a,b) => a + b)
   for (var i = 0; i < available.length; i++) {

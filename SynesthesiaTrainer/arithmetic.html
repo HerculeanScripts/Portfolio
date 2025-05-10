@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Colored Arithmetic</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      font-size: 1.5em;
+      background-color:rgb(204, 203, 205)
+    }
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Colored Arithmetic</h2>
+  <div id="question"></div>
+
+  <input
+    type="text"
+    id="answerInput"
+    placeholder="Type your answer and press Enter"
+    style="font-size: 20px; margin-top: 10px;"
+  />
+  
+  <!-- New: shows the colorized user input -->
+  <div id="coloredAnswer" style="font-size: 24px; margin-top: 4px;"></div>
+  
+  <div id="feedback" style="margin-top: 10px;"></div>
+  <div id="stats" style="margin-top: 10px;"></div>
+  <div id="difficultyDisplay" style="margin-top: 4px;"></div>  <script src="arithmetic.js"></script>
+</body>
+</html>
