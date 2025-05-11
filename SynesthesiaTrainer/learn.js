@@ -1,6 +1,6 @@
 function startLearningPage() {
     const numberEl = document.getElementById('center-number');
-    const colors = ["#DB1616","#DB1CDB","#2DB3E8","#E8902D","#51D31A","#4CA9FF","#FFE14C","#332DF8","#863919"];
+    const colors =  ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
     
     function randomNumber() {
       const number = Math.floor(Math.random() * 10);

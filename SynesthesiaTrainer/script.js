@@ -1,8 +1,8 @@
 const numberColors = {
     0: { hex: "#DB1616", name: "red" },
     1: { hex: "#DB1CDB", name: "pink" },
-    2: { hex: "#2DB3E8", name: "aqua" },
-    3: { hex: "#E8902D", name: "orange" },
+    2: { hex: "#0CE9DB", name: "aqua" },
+    3: { hex: "#FC8601", name: "orange" },
     4: { hex: "#51D31A", name: "green" },
     5: { hex: "#4CA9FF", name: "light-blue" },
     6: { hex: "#914CFF", name: "purple" },
@@ -10,6 +10,7 @@ const numberColors = {
     8: { hex: "#332DF8", name: "blue" },
     9: { hex: "#863919", name: "brown" }
   };
+ // ["#DB1616","#DB1CDB","#0CE9DB","#E8902D","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
   const perDigitAccuracy = Array.from({ length: 10 }, () => 0.1); // starting neutral
   const alpha = 0.2; // smoothing factor
   

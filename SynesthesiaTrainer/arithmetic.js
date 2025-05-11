@@ -7,7 +7,7 @@ let totalQuestions = 0;
 let correctAnswers = 0;
 let difficulty = 0.2; // Start easy
 const operations = ['+', '-', '*', '/'];
-const numberColors = ["#DB1616","#DB1CDB","#2DB3E8","#E8902D","#51D31A","#4CA9FF","#FFE14C","#332DF8","#863919"];
+const numberColors =  ["#DB1616","#DB1CDB","#06FEEE","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
 
 // 1) Update stats & difficulty display
 function updateStats() {
