@@ -10,7 +10,7 @@ const numberColors = {
     8: { hex: "#332DF8", name: "blue" },
     9: { hex: "#863919", name: "brown" }
   };
- // ["#DB1616","#DB1CDB","#0CE9DB","#E8902D","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
+ // ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
   const perDigitAccuracy = Array.from({ length: 10 }, () => 0.1); // starting neutral
   const alpha = 0.2; // smoothing factor
   
@@ -43,10 +43,10 @@ const numberColors = {
     const colors = [];
     for (let i = 0; i < n; i++) {
         const factor = Math.pow(1 - difficulty, 1.5) * 220 + 30;
-
-      const dr = Math.floor((Math.random() - 0.5) * factor);
-      const dg = Math.floor((Math.random() - 0.5) * factor);
-      const db = Math.floor((Math.random() - 0.5) * factor);
+      var a = 0.5;
+      const dr = Math.floor((Math.random() - a) * factor);
+      const dg = Math.floor((Math.random() - a) * factor);
+      const db = Math.floor((Math.random() - a) * factor);
       const color = `rgb(${Math.min(255, Math.max(0, r + dr))}, ${Math.min(255, Math.max(0, g + dg))}, ${Math.min(255, Math.max(0, b + db))})`;
       colors.push(color);
     }
