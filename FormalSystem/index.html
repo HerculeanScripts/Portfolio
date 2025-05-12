@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formal System Generator</title>
+  <style>
+    body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 1rem; }
+    textarea, input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; margin-bottom: 1rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; }
+    .card { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+    ul { margin-left: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <label>Alphabet (e.g., MIU)</label>
+    <input id="alphabet" value="MIU" />
+
+    <label>Axioms (one per line)</label>
+    <textarea id="axioms" rows="3">MI</textarea>
+
+    <label>Inference Rules (one per line, format: xI => xIU)</label>
+    <textarea id="rules" rows="5">xI => xIU
+xIIIy => xUy
+Mx => Mxx
+xUUy => xy</textarea>
+
+    <label>Derivation Steps / Depth</label>
+    <input id="steps" type="number" value="5" />
+
+    <button onclick="generateForward()">Generate Forward Derivation</button>
+    <button onclick="deriveToGoal()">Find Derivation to Target</button>
+  </div>
+
+  <div class="card">
+    <h2>Derivation Trace</h2>
+    <ul id="output"></ul>
+  </div>
+
+  <script>
+    // Escape regex-special characters
+    function escapeRegex(str) {
+      return str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+    }
+
+    // Compile template with single-capture variables
+    function compileTemplate(template, alphabet) {
+      const seen = new Set();
+      const varOrder = [];
+      let pattern = "";
+      for (const ch of template) {
+        if (/[a-z]/.test(ch)) {
+          if (!seen.has(ch)) {
+            seen.add(ch);
+            varOrder.push(ch);
+            pattern += `([${alphabet}]*?)`;
+          } else {
+            pattern += `([${alphabet}]*?)`;
+          }
+        } else {
+          pattern += escapeRegex(ch);
+        }
+      }
+      return { regex: new RegExp(`^${pattern}$`), varOrder };
+    }
+
+    // Infer forward transformation
+    function inferTransformation(inputTemplate, outputTemplate, alphabet) {
+      const { regex, varOrder } = compileTemplate(inputTemplate, alphabet);
+      return function(str) {
+        const match = str.match(regex);
+        if (!match) return null;
+        const values = {};
+        // First occurrences map
+        let groupIndex = 1;
+        for (const v of varOrder) {
+          values[v] = match[groupIndex++];
+        }
+        // Skip additional captures
+        return outputTemplate.replace(/([a-z])/g, (_, v) => values[v] || "");
+      };
+    }
+
+    // Parse rules into forward functions
+    function parseRules(rulesRaw, alphabet) {
+      return rulesRaw.trim().split("\n").map((line, idx) => {
+        const [from, to] = line.split("=>").map(s => (s||"").trim());
+        return { index: idx+1, fn: inferTransformation(from, to, alphabet) };
+      });
+    }
+
+    // Forward BFS search from axioms to generate one random derivation
+    function generateForward() {
+      const alphabet = document.getElementById("alphabet").value.trim().toUpperCase();
+      const axioms = document.getElementById("axioms").value.trim().split("\n").map(s=>s.trim().toUpperCase()).filter(s=>s);
+      const rules = parseRules(document.getElementById("rules").value, alphabet);
+      const steps = parseInt(document.getElementById("steps").value, 10) || 0;
+
+      let current = axioms[Math.floor(Math.random()*axioms.length)];
+      const trace = [{ str: current, rule: "AXIOM" }];
+
+      for (let i=0; i<steps; i++) {
+        const applicable = rules.map(r=>({idx:r.index, nxt:r.fn(current)})).filter(x=>x.nxt);
+        if (applicable.length === 0) break;
+        const choice = applicable[Math.floor(Math.random()*applicable.length)];
+        current = choice.nxt;
+        trace.push({ str: current, rule: `Rule ${choice.idx}` });
+      }
+
+      document.getElementById("output").innerHTML = trace.map(t=>
+        `<li><strong>${t.rule}:</strong> ${t.str}</li>`
+      ).join("\n");
+    }
+
+    // Forward BFS from axioms to target goal
+    function deriveToGoal() {
+      const MAX_FORWARD_DEPTH = parseInt(document.getElementById("steps").value, 10) || 6;
+      const alphabet = document.getElementById("alphabet").value.trim().toUpperCase();
+      const axioms = document.getElementById("axioms").value.trim().split("\n").map(s=>s.trim().toUpperCase()).filter(s=>s);
+      const axiomsSet = new Set(axioms);
+      const rules = parseRules(document.getElementById("rules").value, alphabet);
+
+      let goal = prompt("Enter target string:") || "";
+      goal = goal.trim().toUpperCase();
+      if (!goal || !new RegExp(`^[${alphabet}]+$`).test(goal)) {
+        return alert("Invalid target or uses chars outside the alphabet.");
+      }
+
+      const queue = axioms.map(a=>({ str: a, path:[{str:a,rule:"AXIOM"}] }));
+      const visited = new Set(axioms);
+
+      while (queue.length) {
+        const {str, path} = queue.shift();
+        if (str === goal) {
+          document.getElementById("output").innerHTML = path.map(step=>
+            `<li><strong>${step.rule}:</strong> ${step.str}</li>`
+          ).join("\n");
+          return;
+        }
+        if (path.length > MAX_FORWARD_DEPTH) continue;
+        for (const rule of rules) {
+          const nxt = rule.fn(str);
+          if (nxt && !visited.has(nxt)) {
+            visited.add(nxt);
+            queue.push({ str:nxt, path: path.concat({str:nxt,rule:`Rule ${rule.index}`}) });
+          }
+        }
+      }
+
+      document.getElementById("output").innerHTML =
+        "<li>No derivation found within depth limit.</li>";
+    }
+  </script>
+</body>
+</html>
