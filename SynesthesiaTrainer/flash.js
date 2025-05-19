@@ -1,59 +1,70 @@
-const flashColors = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
-let currentDigit = 0;
-let flashIndex = 0;
-let flashInterval = 1000; // starting interval (ms)
-let intervalID = null;
-let awaitingResponse = false;
+const flashColors = [
+  "#DB1616", "#DB1CDB", "#0CE9DB", "#FC8601", "#51D31A",
+  "#4CA9FF", "#914CFF", "#FFE14C", "#332DF8", "#863919"
+];
 
-const digitEl = document.getElementById('flashDigit');
-const screenBtn = document.getElementById('flashScreen');
+let flashInterval = 1000;
+let flashTimer = null;
+let awaitingMatch = false;
+
+let currentDigit = 0;
+let currentBgIndex = 0;
+
+const flashBtn = document.getElementById('flashScreen');
 const feedbackEl = document.getElementById('flashFeedback');
 
-function newFlashRound() {
-  currentDigit = Math.floor(Math.random() * 10);
-  digitEl.textContent = currentDigit;
-  flashIndex = 0;
-  awaitingResponse = true;
-  startFlashing();
+function getRandomDigit() {
+  return Math.floor(Math.random() * 10);
 }
 
-function startFlashing() {
-  if (intervalID) clearInterval(intervalID);
+function getRandomColorIndex() {
+  return Math.floor(Math.random() * 10);
+}
 
-  intervalID = setInterval(() => {
-    screenBtn.style.backgroundColor = flashColors[flashIndex];
-    screenBtn.dataset.colorIndex = flashIndex;
+function isMatch(digit, bgIndex) {
+  return digit === bgIndex;
+}
 
-    flashIndex = (flashIndex + 1) % flashColors.length;
-  }, flashInterval);
+function flashNext() {
+  currentDigit = getRandomDigit();
+  currentBgIndex = getRandomColorIndex();
+
+  flashBtn.style.backgroundColor = flashColors[currentBgIndex];
+  flashBtn.textContent = currentDigit;
+  awaitingMatch = true;
 }
 
 function handleResponse() {
-  if (!awaitingResponse) return;
+  if (!awaitingMatch) return;
 
-  const shownIndex = parseInt(screenBtn.dataset.colorIndex);
-  if (shownIndex === currentDigit) {
-    feedbackEl.textContent = "Correct!";
-    flashInterval = Math.max(300, flashInterval - 100); // speed up
+  const match = isMatch(currentDigit, currentBgIndex);
+  if (match) {
+    feedbackEl.textContent = "✅ Correct Match!";
+    flashInterval = Math.max(300, flashInterval - 100);
   } else {
-    feedbackEl.textContent = `Wrong! That was ${shownIndex}.`;
-    flashInterval = Math.min(2000, flashInterval + 150); // slow down
+    feedbackEl.textContent = "❌ Incorrect or Mistimed!";
+    flashInterval = Math.min(2000, flashInterval + 150);
   }
 
-  awaitingResponse = false;
-  clearInterval(intervalID);
-  setTimeout(newFlashRound, 1000);
+  awaitingMatch = false;
+  restartFlashing();
 }
 
-// Hotkey
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') {
+function restartFlashing() {
+  clearInterval(flashTimer);
+  flashNext();
+  flashTimer = setInterval(() => {
+    flashNext();
+  }, flashInterval);
+}
+
+// Start the game
+restartFlashing();
+
+// User interaction
+flashBtn.onclick = handleResponse;
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
     handleResponse();
   }
 });
-
-// Click handler
-screenBtn.onclick = handleResponse;
-
-// Start first round
-newFlashRound();
