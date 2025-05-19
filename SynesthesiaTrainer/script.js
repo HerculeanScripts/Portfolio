@@ -11,7 +11,7 @@ const numberColors = {
     9: { hex: "#863919", name: "brown" }
   };
  // ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
-  const perDigitAccuracy = Array.from({ length: 10 }, () => 0.1); // starting neutral
+  const perDigitAccuracy = Array.from({ length: 10 }, () => 0); // starting neutral
   const alpha = 0.2; // smoothing factor
   
   function updateAccuracy(digit, correct) {
@@ -20,7 +20,7 @@ const numberColors = {
   
   function getDifficulty(digit) {
     const raw = perDigitAccuracy[digit];
-    return Math.max(0.1, Math.min(0.9, raw)); // clamp to prevent extremes
+    return Math.max(0, Math.min(0.9, raw)); // clamp to prevent extremes
   }
   function speak(text) {
     const msg = new SpeechSynthesisUtterance(text);
@@ -38,20 +38,36 @@ const numberColors = {
     return Math.sqrt((r1 - r2)**2 + (g1 - g2)**2 + (b1 - b2)**2);
   }
   
-  function generateSimilarColors(baseHex, n, difficulty) {
-    const [r, g, b] = hexToRgb(baseHex);
-    const colors = [];
-    for (let i = 0; i < n; i++) {
-        const factor = Math.pow(1 - difficulty, 1.5) * 220 + 30;
-      var a = 0.5;
-      const dr = Math.floor((Math.random() - a) * factor);
-      const dg = Math.floor((Math.random() - a) * factor);
-      const db = Math.floor((Math.random() - a) * factor);
-      const color = `rgb(${Math.min(255, Math.max(0, r + dr))}, ${Math.min(255, Math.max(0, g + dg))}, ${Math.min(255, Math.max(0, b + db))})`;
-      colors.push(color);
-    }
-    return colors;
+function generateSimilarColors(baseHex, n, difficulty) {
+  const [r, g, b] = hexToRgb(baseHex);
+  const colors = [];
+
+  for (let i = 0; i < n; i++) {
+    // Random target color
+    const target = [
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256)
+    ];
+
+    // Corrected interpolation
+    const finalColor = target.map((bComp, i) => {
+      const aComp = [r, g, b][i];
+      const interpolated = aComp - (1 - difficulty) * (aComp - bComp);
+      const variation = (Math.random() - 0.5) * 10;
+      return Math.max(0, Math.min(255, Math.round(interpolated + variation)));
+    });
+
+    const color = `rgb(${finalColor[0]}, ${finalColor[1]}, ${finalColor[2]})`;
+    colors.push(color);
   }
+
+  return colors;
+}
+
+
+
+
   
   // ------------------------ ACTIVITY 1 -------------------------
   let totalQuestions = 0;

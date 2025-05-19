@@ -24,6 +24,8 @@ const reverseNumberColors = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","
       const btn = document.createElement('button');
       btn.textContent = n;
       btn.style.margin = '5px';
+      btn.className = "digit-option";
+      btn.setAttribute("data-digit", n);
       btn.onclick = () => {
         reverseTotal++;
         if (n === digit) {
@@ -38,7 +40,20 @@ const reverseNumberColors = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","
       opts.appendChild(btn);
     });
   }
-  
+  document.addEventListener("keydown", function(event) {
+  // Check if a number key (0-9) is pressed
+  if (event.key >= '0' && event.key <= '9') {
+    const digit = event.key;
+
+    // Find the button with the corresponding data-digit
+    const button = document.querySelector(`.digit-option[data-digit="${digit}"]`);
+
+    if (button) {
+      button.click(); // Simulate a click on the button
+    }
+  }
+});
+
   // Initialize
   updateReverseStats();
   generateColorToDigit();
