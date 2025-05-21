@@ -1,130 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arithmetic Trainer</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    .page {
-      display: none;
-    }
-    .active {
-      display: block;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1.2rem;
-    }
-    input {
-      font-size: 1.2rem;
-      padding: 5px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Arithmetic Training Program</title>
 </head>
 <body>
-  <div id="main" class="page active">
-    <h1>Arithmetic Trainer</h1>
-    <button onclick="navigate('infinite')">Progressive Mode</button>
-    <button onclick="navigate('other')">Other Mode (TBD)</button>
-  </div>
+<h1>Arithmetic Training</h1>
+<div>
+  <p>Target: <span id="target-number"></span></p>
+  <p>Available Numbers: <span id="available-numbers"></span></p>
+</div>
 
-  <div id="infinite" class="page">
-    <h2>Progressive Arithmetic Mode</h2>
-    <div id="problem"></div>
-    <input id="answer" type="number" onkeydown="handleKey(event)" autofocus />
-    <div>
-      <p id="feedback"></p>
-      <p>Score: <span id="score">0</span></p>
-      <p>Level: <span id="level">1</span></p>
-    </div>
-    <button onclick="navigate('main')">Back to Main</button>
-  </div>
+<div>
+  <input type="text" id="expression-input" placeholder="Enter expression here" size="30" />
+  <button onclick="submitExpression()">Submit</button>
+  <button onclick="nextRound()">Next Round</button>
+  <button onclick="showExampleSolution()">Show Example Solution</button>
+</div>
 
-  <div id="other" class="page">
-    <h2>Other Mode Coming Soon</h2>
-    <button onclick="navigate('main')">Back to Main</button>
-  </div>
+<p id="feedback"></p>
+<p id="score">Score: 0</p>
+<p id="example-solution"></p>
 
-  <script>
-    let level = 1;
-    let score = 0;
-    let totalQuestions = 0;
-    let totalTime = 0;
-    let currentAnswer = 0;
-    let currentOp = '+';
-    let startTime = 0;
-
-    function navigate(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(page).classList.add('active');
-      if (page === 'infinite') {
-        nextProblem();
-        document.getElementById('answer').focus();
-      }
-    }
-
-    function generateProblem() {
-      let opLevel = Math.floor(level / 10);
-      let ops = ['+', '-', '*'];
-      currentOp = ops[Math.min(opLevel, ops.length - 1)];
-
-      // Adjust max range by op
-      let baseMax = 5 + (level % 10) * 2;
-      let max = currentOp === '*' ? Math.floor(baseMax * 0.6) : baseMax;
-
-      let a = Math.floor(Math.random() * max);
-      let b = Math.floor(Math.random() * max);
-      if (currentOp === '-' && b > a) [a, b] = [b, a];
-
-      let expression = `${a} ${currentOp} ${b}`;
-      currentAnswer = eval(expression);
-      return expression;
-    }
-
-    function nextProblem() {
-      let expr = generateProblem();
-      document.getElementById('problem').textContent = expr;
-      document.getElementById('answer').value = '';
-      document.getElementById('feedback').textContent = '';
-      startTime = Date.now();
-    }
-
-    function handleKey(e) {
-      if (e.key === 'Enter') {
-        checkAnswer();
-      }
-    }
-
-    function checkAnswer() {
-      let answer = parseInt(document.getElementById('answer').value);
-      let responseTime = (Date.now() - startTime) / 1000;
-      totalQuestions++;
-      totalTime += responseTime;
-
-      if (answer === currentAnswer) {
-        level = Math.min(level + 1, 1000);
-        document.getElementById('feedback').textContent = `Correct! (${responseTime.toFixed(2)}s)`;
-      } else {
-        level = Math.max(level - 1, 1);
-        document.getElementById('feedback').textContent = `Incorrect. Correct answer was ${currentAnswer}.`;
-      }
-
-      let avgTime = totalTime / totalQuestions;
-      let opMultiplier = currentOp === '*' ? 2.0 : 1.0;
-      score = (level * opMultiplier * 10) / avgTime;
-
-      document.getElementById('score').textContent = score.toFixed(2);
-      document.getElementById('level').textContent = level;
-
-      nextProblem();
-    }
-  </script>
+<script src="script.js"></script>
 </body>
 </html>

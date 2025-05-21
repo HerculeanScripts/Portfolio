@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Color Sequence Typing Game</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; }
+    #flashArea {
+      width: 300px; height: 300px; margin: 20px auto;
+      border: 3px solid black; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 3em; color: white;
+    }
+    #results span {
+      margin: 0 4px; padding: 4px;
+    }
+    input[type="text"] {
+      font-size: 1.2em;
+      width: 80%;
+      text-align: center;
+    }
+    button {
+      font-size: 1.2em;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Color Sequence Typing</h2>
+  <div id="flashArea"></div>
+
+  <p>Enter the digits below as colors flash:</p>
+  <input id="digitInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="50" />
+  <div>
+    <button id="startBtn">Start / Restart</button>
+  </div>
+  <div id="results"></div>
+
+  <script>
+    const numberColors = {
+      0: "#DB1616", 1: "#DB1CDB", 2: "#0CE9DB", 3: "#FC8601", 4: "#51D31A",
+      5: "#4CA9FF", 6: "#914CFF", 7: "#FFE14C", 8: "#332DF8", 9: "#863919"
+    };
+
+    const flashArea = document.getElementById("flashArea");
+    const digitInput = document.getElementById("digitInput");
+    const resultDiv = document.getElementById("results");
+    const startBtn = document.getElementById("startBtn");
+
+    let level = 0;  // difficulty level
+    const maxLevel = 20;
+    let sequence = [];
+
+    function getDifficultySettings(level) {
+      const length = Math.min(5 + level, 20);               // flash count
+      const speed = Math.max(300, 1000 - level * 50);       // flash duration
+      return { length, speed };
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function startFlashSequence() {
+      const { length, speed } = getDifficultySettings(level);
+      sequence = Array.from({ length }, () => Math.floor(Math.random() * 10));
+      digitInput.value = "";
+      digitInput.focus();
+      resultDiv.textContent = "";
+
+      // Pre-delay
+      flashArea.style.background = "#ffffff";
+      await sleep(2000);
+
+      for (let i = 0; i < sequence.length; i++) {
+        const digit = sequence[i];
+        flashArea.style.background = numberColors[digit];
+        await sleep(speed);
+
+        // White flash separator
+        flashArea.style.background = "#ffffff";
+        flashArea.textContent = "";
+        await sleep(150);
+      }
+
+      // End delay
+      flashArea.style.background = "#ffffff";
+      flashArea.textContent = "Type now";
+      await sleep(3000);
+
+      checkAnswer();
+    }
+
+    function checkAnswer() {
+      const input = digitInput.value.trim();
+      let correct = true;
+
+      const result = sequence.map((digit, i) => {
+        const user = input[i];
+        const isMatch = user == digit;
+        if (!isMatch) correct = false;
+        const color = isMatch ? "green" : "red";
+        return `<span style="color:${color}">${digit}</span>`;
+      }).join("");
+
+      resultDiv.innerHTML = `Expected: ${result}<br>Your input: ${input}`;
+
+      // Adjust difficulty
+      if (correct) {
+        level = Math.min(level + 1, maxLevel);
+        resultDiv.innerHTML += "<br><strong style='color:green'>Correct! Level up.</strong>";
+      } else {
+        level = Math.max(level - 1, 0);
+        resultDiv.innerHTML += "<br><strong style='color:red'>Incorrect. Level down.</strong>";
+      }
+    }
+
+    startBtn.onclick = () => {
+      startFlashSequence();
+    };
+  </script>
+</body>
+</html>
