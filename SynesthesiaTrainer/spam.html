@@ -91,28 +91,32 @@
     }
 
     function checkAnswer() {
-      const input = digitInput.value.trim();
-      let correct = true;
+  const input = digitInput.value.trim();
+  let correctCount = 0;
 
-      const result = sequence.map((digit, i) => {
-        const user = input[i];
-        const isMatch = user == digit;
-        if (!isMatch) correct = false;
-        const color = isMatch ? "green" : "red";
-        return `<span style="color:${color}">${digit}</span>`;
-      }).join("");
+  const result = sequence.map((digit, i) => {
+    const user = input[i];
+    const isMatch = user == digit;
+    if (isMatch) correctCount++;
+    const color = isMatch ? "green" : "red";
+    return `<span style="color:${color}">${digit}</span>`;
+  }).join("");
 
-      resultDiv.innerHTML = `Expected: ${result}<br>Your input: ${input}`;
+  const percent = (correctCount / sequence.length) * 100;
+  resultDiv.innerHTML = `Expected: ${result}<br>Your input: ${input}`;
 
-      // Adjust difficulty
-      if (correct) {
-        level = Math.min(level + 1, maxLevel);
-        resultDiv.innerHTML += "<br><strong style='color:green'>Correct! Level up.</strong>";
-      } else {
-        level = Math.max(level - 1, 0);
-        resultDiv.innerHTML += "<br><strong style='color:red'>Incorrect. Level down.</strong>";
-      }
-    }
+  // Adjust difficulty
+  if (percent === 100) {
+    level = Math.min(level + 1, maxLevel);
+    resultDiv.innerHTML += "<br><strong style='color:green'>Perfect! Level up.</strong>";
+  } else if (percent < 75) {
+    level = Math.max(level - 1, 0);
+    resultDiv.innerHTML += "<br><strong style='color:red'>Below 75%. Level down.</strong>";
+  } else {
+    resultDiv.innerHTML += "<br><strong style='color:gray'>Close. Level stays the same.</strong>";
+  }
+}
+
 
     startBtn.onclick = () => {
       startFlashSequence();
