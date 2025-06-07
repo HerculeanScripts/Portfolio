@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digit to Sound</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    button {
+      font-size: 1.3rem;
+      margin: 8px;
+    }
+    .highlight {
+      background-color: yellow;
+    }
+    .correct {
+      background-color: lightgreen;
+    }
+  </style>
+</head>
+<body>
+  <h1>Digit to Sound</h1>
+  <a href="index.html">← Back to Menu</a>
+  <div id="digit" style="font-size: 3rem; margin: 20px;"></div>
+  <div id="sound-buttons"></div>
+  <div style="margin-top: 20px;">
+    <button id="submit-btn">Submit Selection</button>
+  </div>
+  <div id="feedback"></div>
+
+  <script>
+    const sounds = Array.from({ length: 10 }, (_, i) => `sounds/${i}.wav`);
+    let currentDigit = null;
+    let selectedIndex = null;
+    let indexToDigit = {}; // Maps digit to its button
+
+    function newRound() {
+      currentDigit = Math.floor(Math.random() * 10);
+      selectedIndex = null;
+      document.getElementById('digit').textContent = currentDigit;
+      document.getElementById('feedback').textContent = "Choose the matching sound.";
+
+      const indices = Array.from({ length: 10 }, (_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+
+      indexToDigit = {};
+      const container = document.getElementById('sound-buttons');
+      container.innerHTML = '';
+
+      indices.forEach((digit, btnIndex) => {
+        const btn = document.createElement('button');
+        btn.textContent = `🔊 Sound ${btnIndex + 1}`;
+        btn.onclick = () => {
+          const audio = new Audio(sounds[digit]);
+          audio.play();
+          selectedIndex = digit;
+        };
+        container.appendChild(btn);
+        indexToDigit[digit] = btn;
+      });
+    }
+
+    document.getElementById('submit-btn').onclick = () => {
+      if (selectedIndex === null) {
+        document.getElementById('feedback').textContent = "❗ Please select and listen to a sound before submitting.";
+        return;
+      }
+
+      const allButtons = document.querySelectorAll('#sound-buttons button');
+      allButtons.forEach(btn => btn.classList.remove('highlight', 'correct'));
+
+      if (selectedIndex === currentDigit) {
+        document.getElementById('feedback').textContent = "✅ Correct!";
+        if (indexToDigit[currentDigit]) indexToDigit[currentDigit].classList.add('correct');
+      } else {
+        document.getElementById('feedback').textContent = `❌ Incorrect. That was digit ${selectedIndex}. Correct was ${currentDigit}.`;
+        new Audio(sounds[currentDigit]).play();
+        if (indexToDigit[selectedIndex]) indexToDigit[selectedIndex].classList.add('highlight');
+        if (indexToDigit[currentDigit]) indexToDigit[currentDigit].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        newRound();
+      }, 2500);
+    };
+
+    newRound();
+  </script>
+</body>
+</html>

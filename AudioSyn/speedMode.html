@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Speed Mode - Digit Stream Adaptive</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    #sequence-display {
+      font-size: 2rem;
+      margin: 20px;
+      min-height: 2.5rem;
+      letter-spacing: 0.3em;
+    }
+    input[type="text"] {
+      font-size: 1.5rem;
+      width: 90%;
+      max-width: 300px;
+      padding: 8px;
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
+    button {
+      font-size: 1.3rem;
+      margin: 15px;
+      padding: 8px 16px;
+    }
+    #feedback {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.3rem;
+      min-height: 3rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Speed Mode - Digit Stream Adaptive</h1>
+  <a href="index.html">← Back to Menu</a>
+  <div>
+    <button id="start-btn">Start Round</button>
+  </div>
+  <div id="sequence-display"></div>
+  <div>
+    <input type="text" id="user-input" placeholder="Enter digits here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled />
+  </div>
+  <div>
+    <button id="submit-btn" disabled>Submit</button>
+  </div>
+  <div id="feedback"></div>
+
+  <script>
+    const sounds = Array.from({ length: 10 }, (_, i) => `sounds/${i}.wav`);
+    let sequence = [];
+    let playing = false;
+    let interval = 1000; // time between sounds (ms)
+    let seqLength = 5;
+    const minInterval = 400;
+    const maxInterval = 2000;
+    const minSeqLength = 3;
+    const maxSeqLength = 15;
+
+    const startBtn = document.getElementById('start-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const userInput = document.getElementById('user-input');
+    const feedback = document.getElementById('feedback');
+    const sequenceDisplay = document.getElementById('sequence-display');
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function playSound(digit) {
+      return new Promise(resolve => {
+        const audio = new Audio(sounds[digit]);
+        audio.onended = resolve;
+        audio.play();
+      });
+    }
+
+    async function playSequence(seq) {
+      for (let digit of seq) {
+        // No digit shown during playback
+        sequenceDisplay.textContent = '';
+        await playSound(digit);
+        await sleep(interval - 300);
+      }
+      sequenceDisplay.textContent = '';
+    }
+
+    startBtn.onclick = async () => {
+      if (playing) return;
+      playing = true;
+      feedback.textContent = '';
+      userInput.value = '';
+      userInput.disabled = false;
+      userInput.focus();
+      userInput.select();
+      submitBtn.disabled = false;
+      startBtn.disabled = true;
+
+      sequence = [];
+      for (let i = 0; i < seqLength; i++) {
+        sequence.push(Math.floor(Math.random() * 10));
+      }
+
+      sequenceDisplay.textContent = 'Get ready...';
+      await sleep(2500); // 2.5 sec wait before playing
+
+      await playSequence(sequence);
+
+      sequenceDisplay.textContent = 'Sequence finished. Submit your input.';
+      playing = false;
+    };
+
+    submitBtn.onclick = () => {
+      if (playing) {
+        feedback.textContent = 'Please wait for the sequence to finish.';
+        return;
+      }
+      const input = userInput.value.trim();
+      if (input.length !== sequence.length) {
+        feedback.textContent = `Please enter exactly ${sequence.length} digits.`;
+        return;
+      }
+      if (!/^[0-9]+$/.test(input)) {
+        feedback.textContent = 'Please enter only digits (0-9).';
+        return;
+      }
+
+      let correctCount = 0;
+      for (let i = 0; i < sequence.length; i++) {
+        if (parseInt(input[i], 10) === sequence[i]) correctCount++;
+      }
+
+      feedback.textContent =
+        `You got ${correctCount} out of ${sequence.length} correct.\n` +
+        `Correct sequence: ${sequence.join(' ')}`;
+
+      // Adaptive difficulty
+      if (correctCount === sequence.length) {
+        seqLength = Math.min(maxSeqLength, seqLength + 1);
+        interval = Math.max(minInterval, interval - 100);
+        feedback.textContent += '\nPerfect! Sequence longer and faster next round.';
+      } else if (correctCount / sequence.length < 0.6) {
+        seqLength = Math.max(minSeqLength, seqLength - 1);
+        interval = Math.min(maxInterval, interval + 100);
+        feedback.textContent += '\nAccuracy low; sequence shorter and slower next round.';
+      } else {
+        feedback.textContent += '\nKeep trying!';
+      }
+
+      submitBtn.disabled = true;
+      userInput.disabled = true;
+      startBtn.disabled = false;
+      sequenceDisplay.textContent = '';
+    };
+  </script>
+</body>
+</html>

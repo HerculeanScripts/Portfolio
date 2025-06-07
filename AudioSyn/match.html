@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sound Matching Mode</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .digits {
+      margin-top: 20px;
+    }
+    button {
+      font-size: 1.5rem;
+      margin: 5px;
+      padding: 10px 20px;
+    }
+    #feedback {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sound Matching</h1>
+  <a href="index.html">← Back to Menu</a><br><br>
+  <button onclick="playCurrentDigit()">Play Sound</button>
+
+  <div class="digits">
+    <div id="buttons"></div>
+  </div>
+
+  <div id="feedback"></div>
+  <div id="stats">Average Response Time: --</div>
+
+  <script>
+    const sounds = Array.from({ length: 10 }, (_, i) => `sounds/${i}.wav`);
+    let correctDigit = null;
+    let startTime = null;
+    let totalTime = 0;
+    let attempts = 0;
+
+    const buttonContainer = document.getElementById("buttons");
+    for (let i = 0; i <= 9; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.onclick = () => handleGuess(i);
+      buttonContainer.appendChild(btn);
+    }
+
+    function playCurrentDigit() {
+      // If no digit selected yet, generate one and start timer
+      if (correctDigit === null) {
+        correctDigit = Math.floor(Math.random() * 10);
+        startTime = performance.now();
+      }
+
+      const audio = new Audio(sounds[correctDigit]);
+      audio.play();
+
+      // Don't restart timer if already started
+      if (startTime === null) {
+        startTime = performance.now();
+      }
+
+      document.getElementById("feedback").textContent = "Waiting for answer...";
+    }
+
+    function handleGuess(digit) {
+      if (correctDigit === null || startTime === null) return;
+
+      const responseTime = performance.now() - startTime;
+      attempts++;
+      totalTime += responseTime;
+
+      const isCorrect = digit === correctDigit;
+      document.getElementById("feedback").textContent =
+        isCorrect
+          ? `✅ Correct! (${responseTime.toFixed(0)} ms)`
+          : `❌ Incorrect (was ${correctDigit}) (${responseTime.toFixed(0)} ms)`;
+
+      const average = (totalTime / attempts).toFixed(0);
+      document.getElementById("stats").textContent = `Average Response Time: ${average} ms`;
+
+      // Reset for next round
+      correctDigit = null;
+      startTime = null;
+    }
+
+    // Allow keyboard 0–9 input
+    document.addEventListener("keydown", e => {
+      if (e.key >= "0" && e.key <= "9") {
+        handleGuess(parseInt(e.key));
+      }
+    });
+  </script>
+</body>
+</html>
