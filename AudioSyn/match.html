@@ -42,30 +42,41 @@
     let totalTime = 0;
     let attempts = 0;
 
-    const buttonContainer = document.getElementById("buttons");
-    for (let i = 0; i <= 9; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.onclick = () => handleGuess(i);
-      buttonContainer.appendChild(btn);
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function renderButtons() {
+      const container = document.getElementById("buttons");
+      container.innerHTML = "";
+      const digits = shuffle([...Array(10).keys()]);
+      for (const i of digits) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.onclick = () => handleGuess(i);
+        container.appendChild(btn);
+      }
     }
 
     function playCurrentDigit() {
-      // If no digit selected yet, generate one and start timer
       if (correctDigit === null) {
         correctDigit = Math.floor(Math.random() * 10);
-        startTime = performance.now();
       }
 
       const audio = new Audio(sounds[correctDigit]);
       audio.play();
 
-      // Don't restart timer if already started
+      // Only start timer if not already running
       if (startTime === null) {
         startTime = performance.now();
       }
 
       document.getElementById("feedback").textContent = "Waiting for answer...";
+      renderButtons();  // Randomize button layout each round
     }
 
     function handleGuess(digit) {
@@ -95,6 +106,9 @@
         handleGuess(parseInt(e.key));
       }
     });
+
+    // Initialize buttons once (initial display)
+    renderButtons();
   </script>
 </body>
 </html>
