@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio to Color</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 30px; }
+    .color-swatch {
+      width: 60px; height: 60px; margin: 5px;
+      display: inline-block; border: 2px solid #000;
+      cursor: pointer;
+    }
+    #feedback { margin-top: 20px; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h2>Match the Color to the Sound</h2>
+  <a href="index.html">← Back to Menu</a><br><br>
+  <button onclick="playSound()">Play Sound</button><br><br>
+  <div id="colorOptions"></div>
+  <div id="feedback"></div>
+
+  <script>
+    const digitToColor = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
+    const sounds = Array.from({ length: 10 }, (_, i) => `sounds/${i}.wav`);
+
+    let correctDigit = null;
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function newRound() {
+      correctDigit = Math.floor(Math.random() * 10);
+      renderColors();
+      document.getElementById("feedback").textContent = "";
+    }
+
+    function playSound() {
+      if (correctDigit === null) return;
+      const audio = new Audio(sounds[correctDigit]);
+      audio.play();
+    }
+
+    function renderColors() {
+      const container = document.getElementById("colorOptions");
+      container.innerHTML = "";
+      const digits = shuffle([...Array(10).keys()]);
+      for (const i of digits) {
+        const div = document.createElement("div");
+        div.className = "color-swatch";
+        div.style.backgroundColor = digitToColor[i];
+        div.onclick = () => handleColorGuess(i);
+        container.appendChild(div);
+      }
+    }
+
+    function handleColorGuess(guess) {
+      if (guess === correctDigit) {
+        document.getElementById("feedback").textContent = "✅ Correct!";
+        setTimeout(newRound, 1000);
+      } else {
+        document.getElementById("feedback").textContent = `❌ Try again.`;
+      }
+    }
+
+    newRound();
+  </script>
+</body>
+</html>

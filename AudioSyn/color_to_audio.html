@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Color to Audio Matching</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 30px; }
+    .color-box {
+      width: 100px; height: 100px;
+      margin: 10px auto; border: 2px solid black;
+    }
+    button {
+      font-size: 1rem;
+      margin: 5px;
+      padding: 8px 15px;
+    }
+    .audio-buttons { margin-top: 10px; }
+    #feedback { margin-top: 20px; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h2>Match the Sound to the Color</h2>
+  <a href="index.html">← Back to Menu</a><br><br>
+
+  <button onclick="startRound()">Show Color</button>
+  <div class="color-box" id="colorBox"></div>
+
+  <div class="audio-buttons" id="audioButtons"></div>
+  <button id="submitBtn" onclick="submitGuess()" disabled>Submit Selection</button>
+
+  <div id="feedback"></div>
+
+  <script>
+    const digitToColor = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
+    const sounds = Array.from({ length: 10 }, (_, i) => `sounds/${i}.wav`);
+
+    let correctDigit = null;
+    let selectedGuess = null;
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function startRound() {
+      correctDigit = Math.floor(Math.random() * 10);
+      selectedGuess = null;
+      document.getElementById("colorBox").style.backgroundColor = digitToColor[correctDigit];
+      document.getElementById("feedback").textContent = "";
+      renderButtons();
+      document.getElementById("submitBtn").disabled = false;
+    }
+
+    function renderButtons() {
+      const container = document.getElementById("audioButtons");
+      container.innerHTML = "";
+      const digits = shuffle([...Array(10).keys()]);
+
+      for (const i of digits) {
+        const btn = document.createElement("button");
+        btn.textContent = "🔊";
+        btn.onclick = () => {
+          new Audio(sounds[i]).play();
+          selectedGuess = i;
+        };
+        container.appendChild(btn);
+      }
+    }
+
+    function submitGuess() {
+      if (selectedGuess === null) {
+        document.getElementById("feedback").textContent = "⚠️ Please select and listen to a sound before submitting.";
+        return;
+      }
+
+      const result = selectedGuess === correctDigit
+        ? "✅ Correct!"
+        : `❌ Incorrect (was ${correctDigit})`;
+
+      document.getElementById("feedback").textContent = result;
+      document.getElementById("submitBtn").disabled = true;
+    }
+  </script>
+</body>
+</html>
