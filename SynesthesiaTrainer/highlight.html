@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digit Reader Highlighter</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 20px; }
+    #digitText { font-size: 28px; margin: 20px; }
+    .digit { padding: 2px 4px; margin: 1px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h2>Digit Reader Mode</h2>
+  <div id="digitText"></div>
+  <button onclick="highlight()">Highlight</button>
+  <button onclick="unhighlight()">Unhighlight</button>
+  <button onclick="generateDigits()">Generate</button>
+
+  <script>
+    const colors = ["#DB1616","#DB1CDB","#0CE9DB","#FC8601","#51D31A","#4CA9FF","#914CFF","#FFE14C","#332DF8","#863919"];
+
+    let current = 0;
+    let spans = [];
+
+    function generateDigits() {
+      const container = document.getElementById("digitText");
+      container.innerHTML = "";
+      spans = [];
+      current = 0;
+
+      const str = Array.from({ length: 60 }, () => Math.floor(Math.random() * 10)).join("");
+      for (let i = 0; i < str.length; i++) {
+        const span = document.createElement("span");
+        span.textContent = str[i];
+        span.className = "digit";
+        container.appendChild(span);
+        spans.push(span);
+      }
+    }
+
+    function highlight() {
+      if (current >= spans.length) return;
+      const d = parseInt(spans[current].textContent);
+      spans[current].style.backgroundColor = colors[d];
+      spans[current].style.color = "#000";
+      current++;
+    }
+
+    function unhighlight() {
+      if (current <= 0) return;
+      current--;
+      spans[current].style.backgroundColor = "";
+      spans[current].style.color = "";
+    }
+
+    generateDigits(); // load once by default
+  </script>
+</body>
+</html>

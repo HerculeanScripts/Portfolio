@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Digit to Color Flash</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    #flashDigit {
+      font-size: 100px; height: 150px; margin: 30px auto;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .colorBtn {
+      width: 50px; height: 50px; border: 2px solid black;
+      margin: 4px; display: inline-block;
+    }
+    #colorPad { margin: 20px auto; width: fit-content; }
+  </style>
+</head>
+<body>
+  <h2>Digit to Color Flash</h2>
+  <div id="flashDigit">---</div>
+  <div id="colorPad"></div>
+  <button id="startBtn" onclick="startRound()">Start / Restart</button>
+  <p id="feedback"></p>
+
+  <script>
+    const digitColors = [
+      "#DB1616", "#DB1CDB", "#0CE9DB", "#FC8601", "#51D31A",
+      "#4CA9FF", "#914CFF", "#FFE14C", "#332DF8", "#863919"
+    ];
+
+    let sequence = [];
+    let userInput = [];
+    let flashDelay = 1000;
+    let level = 3;
+    let currentInputIndex = 0;
+    let acceptingInput = false;
+
+    const flashEl = document.getElementById("flashDigit");
+    const feedback = document.getElementById("feedback");
+    const pad = document.getElementById("colorPad");
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createColorPad() {
+      pad.innerHTML = "";
+      const shuffled = shuffle([...Array(10).keys()]);
+      for (let i of shuffled) {
+        const btn = document.createElement("button");
+        btn.className = "colorBtn";
+        btn.style.backgroundColor = digitColors[i];
+        btn.onclick = () => registerInput(i);
+        pad.appendChild(btn);
+      }
+    }
+
+    function flashSequence(index = 0) {
+      if (index >= sequence.length) {
+        flashEl.textContent = "---";
+        acceptingInput = true;
+        return;
+      }
+
+      const digit = sequence[index];
+      flashEl.style.color = "black";
+      flashEl.textContent = digit;
+
+      setTimeout(() => {
+        flashEl.textContent = "";
+        setTimeout(() => flashSequence(index + 1), flashDelay / 2);
+      }, flashDelay);
+    }
+
+    function generateSequence(len) {
+      const seq = [];
+      for (let i = 0; i < len; i++) {
+        seq.push(Math.floor(Math.random() * 10));
+      }
+      return seq;
+    }
+
+    function startRound() {
+      sequence = generateSequence(level);
+      userInput = [];
+      currentInputIndex = 0;
+      feedback.textContent = "";
+      acceptingInput = false;
+      createColorPad();  // Re-randomize each round
+      flashSequence();
+    }
+
+    function registerInput(colorIndex) {
+      if (!acceptingInput || currentInputIndex >= sequence.length) return;
+
+      userInput.push(colorIndex);
+      currentInputIndex++;
+
+      if (userInput.length === sequence.length) {
+        acceptingInput = false;
+        const correct = sequence.every((d, i) => d === userInput[i]);
+        if (correct) {
+          feedback.textContent = "✅ Correct!";
+          level++;
+          flashDelay = Math.max(300, flashDelay - 50);
+        } else {
+          feedback.textContent = `❌ Incorrect. Correct was: ${sequence.join("")}`;
+          const matchRatio = userInput.filter((v, i) => v === sequence[i]).length / level;
+          if (matchRatio < 0.75 && level > 3) {
+            level--;
+            flashDelay += 50;
+          }
+        }
+      }
+    }
+
+    // Initial pad setup
+    createColorPad();
+  </script>
+</body>
+</html>
