@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte Carlo</title>
+</head>
+<body>
+    <svg id="svgArea"></svg>
+    <br>
+<button onclick="spawn()">Spawn</button>
+<br>
+<button onclick="reset()">Reset</button>
+<br>
+<label>σ (Standard deviation of sensors) : </label><input id="sigmaInput" type="range" min="1" max="200" value="22"><label id="sigmaLabel">22</label>
+<br>
+<label>Frame time / refresh rate (ms) : </label><input id="timeInput" type="range" min="1" max="1000" value="60"><label id="timeLabel">20</label>
+<br>
+<label>Particle spawn offset range : </label><input id="jitInput" type="range" min="0" max="20" value="1"><label id="jitLabel">4</label>
+<br>
+<label># of particles : </label><input id="particleInput" type="range" min="50" max="10000" value="1200"><label id="particleLabel">1200</label>
+<br>
+<label>Particle movement offset : </label><input id="movInput" type="range" min="0" max="20" value="2"><label id="movLabel">4</label>
+<br>
+<label># of injected particles : </label><input id="injectedInput" type="range" min="1" max="500" value="60"><label id="injectedLabel">60</label>
+<br>
+<label id="comparisonLabel">Robot position : {X,Y}; Predicted / average position : {x,y}</label>
+<script src="script.js"></script>
+</body>
+</html>
